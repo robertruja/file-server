@@ -1,5 +1,6 @@
 package org.crumbs.fileserver.handler;
 
+import lombok.AllArgsConstructor;
 import org.crumbs.core.logging.Logger;
 import org.crumbs.mvc.exception.InternalServerErrorException;
 import org.crumbs.mvc.exception.NotFoundException;
@@ -11,13 +12,10 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 
+@AllArgsConstructor
 public class FileReader {
 
     private static Logger logger = Logger.getLogger(FileReader.class);
-
-    public FileReader(int bufferSize) {
-        this.bufferSize = bufferSize;
-    }
 
     private int bufferSize;
 

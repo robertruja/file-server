@@ -5,7 +5,6 @@ import org.crumbs.core.annotation.Property;
 import org.crumbs.core.logging.Logger;
 import org.crumbs.mvc.common.model.HttpMethod;
 import org.crumbs.mvc.common.model.HttpStatus;
-import org.crumbs.mvc.common.model.Mime;
 import org.crumbs.mvc.exception.CrumbsMVCInitException;
 import org.crumbs.mvc.exception.HttpMethodNotAllowedException;
 import org.crumbs.mvc.exception.InternalServerErrorException;
@@ -61,60 +60,10 @@ public class FileServer implements HandlerInterceptor {
         }
 
         String finalPath = rootPath + path;
-        int extensionIdx = finalPath.lastIndexOf(".");
-        String type = extensionIdx > 0 ? finalPath.substring(finalPath.lastIndexOf(".")) : "";
+        String type = getFileExtension(finalPath);
         logger.debug("Serving file of type: {}", type);
-        switch (type) {
-            case ".txt":
-                response.setMime(Mime.TEXT_PLAIN);
-                break;
-            case ".html":
-            case ".htm":
-                response.setMime(Mime.TEXT_HTML);
-                break;
-            case ".css":
-                response.setMime(Mime.TEXT_CSS);
-                break;
-            case ".js":
-                response.setMime(Mime.TEXT_JAVASCRIPT);
-                break;
-            case ".json":
-                response.setMime(Mime.APPLICATION_JSON);
-                break;
-            case ".xhtml":
-                response.setMime(Mime.XHTML);
-                break;
-            case ".xml":
-                response.setMime(Mime.XML);
-                break;
-            case ".ico":
-                response.setMime(Mime.ICO);
-                break;
-            case ".bmp":
-                response.setMime(Mime.BMP);
-                break;
-            case ".gif":
-                response.setMime(Mime.GIF);
-                break;
-            case ".jpg":
-            case ".jpeg":
-                response.setMime(Mime.JPEG);
-                break;
-            case ".png":
-                response.setMime(Mime.PNG);
-                break;
-            case ".svg":
-                response.setMime(Mime.SVG);
-                break;
-            case ".pdf":
-                response.setMime(Mime.PDF);
-                break;
-            case ".zip":
-                response.setMime(Mime.ZIP);
-                break;
-            default:
-                response.setMime(Mime.APPLICATION_OCTET_STREAM);
-        }
+
+        response.setMime(FileType.fromExtension(type).getMime());
         response.setStatus(HttpStatus.OK);
         try {
             reader.writeFileToResponse(finalPath, path,  response);
@@ -122,5 +71,10 @@ public class FileServer implements HandlerInterceptor {
             throw new InternalServerErrorException("IO error: Unable to copy from file to output stream", ex);
         }
         return false;
+    }
+
+    private String getFileExtension(String finalPath) {
+        int extensionIdx = finalPath.lastIndexOf(".");
+        return extensionIdx > 0 ? finalPath.substring(finalPath.lastIndexOf(".")) : "";
     }
 }
