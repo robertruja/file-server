@@ -14,7 +14,6 @@ import org.crumbs.mvc.interceptor.HandlerInterceptor;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 
 public class FileServer implements HandlerInterceptor {
 
@@ -32,7 +31,7 @@ public class FileServer implements HandlerInterceptor {
     private Integer bufferSize;
 
     @CrumbInit
-    public void init() throws MalformedURLException {
+    public void init() {
         reader = new FileReader(bufferSize);
         if(rootPath.equals("/")) {
             throw new CrumbsMVCInitException("Fileserver init requires property \"fileserver.root.path\" " +
